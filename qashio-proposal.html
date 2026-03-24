@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qashio × HubSpot Email Sequence Strategy</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#030f08;color:#f0faf5;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#030f08}
+::-webkit-scrollbar-thumb{background:rgba(15,254,138,.3);border-radius:3px}
+
+/* ── Progress Bar ── */
+#progress-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:100;background:rgba(15,254,138,.1)}
+#progress-fill{height:100%;background:linear-gradient(90deg,#0ffe8a,#00c46a);width:0;transition:width .1s;box-shadow:0 0 20px rgba(15,254,138,.5)}
+
+/* ── Particles ── */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+/* ── Animations ── */
+@keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-20px) rotate(2deg)}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes slideIn{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes envelopeFloat{0%,100%{transform:translateY(0) rotateY(0)}25%{transform:translateY(-12px) rotateY(8deg)}50%{transform:translateY(-6px) rotateY(-5deg)}75%{transform:translateY(-18px) rotateY(4deg)}}
+
+/* ── Reveal on scroll ── */
+.reveal{opacity:0;transform:translateY(50px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-60px);transition:all .7s cubic-bezier(.16,1,.3,1)}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(60px);transition:all .7s cubic-bezier(.16,1,.3,1)}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-scale{opacity:0;transform:translateY(40px) scale(.95);transition:all .6s cubic-bezier(.16,1,.3,1)}
+.reveal-scale.visible{opacity:1;transform:translateY(0) scale(1)}
+
+/* ── Envelope 3D ── */
+.envelope-3d{perspective:800px;position:absolute;animation:envelopeFloat 6s ease-in-out infinite;pointer-events:none}
+.envelope-body{width:120px;height:80px;position:relative;transform-style:preserve-3d}
+.envelope-base{width:100%;height:100%;border-radius:6px;background:linear-gradient(135deg,#0a2e1a,#145a38);border:1px solid rgba(0,255,136,.2);box-shadow:0 8px 32px rgba(0,255,136,.15);position:absolute}
+.envelope-flap{width:100%;height:50%;position:absolute;top:0;left:0;background:linear-gradient(180deg,rgba(15,254,138,.2),#0a2e1a);border-radius:6px 6px 0 0;transform-origin:top center;transform:rotateX(0deg);transition:transform 4s ease;border-bottom:1px solid rgba(0,255,136,.3)}
+.envelope-flap.open{transform:rotateX(160deg)}
+.envelope-letter{width:80%;height:0;background:rgba(255,255,255,.9);border-radius:3px;position:absolute;top:10px;left:10%;transition:all 2s ease 1s;opacity:0;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.envelope-flap.open ~ .envelope-letter{height:35px;top:-20px;opacity:1}
+
+/* ── Hero ── */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:40px 24px;overflow:hidden}
+.hero-glow{position:absolute;width:70vw;height:70vw;border-radius:50%;background:radial-gradient(circle,rgba(15,254,138,.06),transparent 60%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.hero-content{text-align:center;position:relative;z-index:2;max-width:900px}
+.badge{display:inline-flex;align-items:center;gap:10px;background:rgba(15,254,138,.08);border:1px solid rgba(15,254,138,.2);border-radius:40px;padding:8px 24px;margin-bottom:32px;animation:slideIn .8s ease-out}
+.badge-dot{width:8px;height:8px;border-radius:50%;background:#0ffe8a;animation:pulse 2s infinite}
+.badge-text{font-size:12px;font-weight:600;color:#0ffe8a;letter-spacing:.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.hero h1{animation:slideIn 1s ease-out .2s both;font-size:clamp(36px,6.5vw,72px);font-weight:800;line-height:1.08;margin-bottom:24px;letter-spacing:-.02em}
+.hero h1 .gradient{background:linear-gradient(135deg,#0ffe8a,#00e07a,#0ffe8a);background-size:200% 200%;animation:gradientShift 4s ease infinite;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{animation:slideIn 1s ease-out .4s both;font-size:clamp(15px,2.2vw,19px);color:rgba(240,250,245,.5);max-width:650px;margin:0 auto 40px;line-height:1.75}
+.stats{animation:slideIn 1s ease-out .6s both;display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+.stat-num{font-size:36px;font-weight:800;color:#0ffe8a;font-family:'JetBrains Mono',monospace}
+.stat-label{font-size:11px;color:rgba(240,250,245,.4);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.scroll-hint{animation:slideIn 1s ease-out .8s both;margin-top:60px;opacity:.4}
+.scroll-mouse{width:24px;height:40px;border:2px solid rgba(15,254,138,.4);border-radius:12px;margin:0 auto 8px;position:relative}
+.scroll-dot{width:4px;height:8px;background:#0ffe8a;border-radius:2px;position:absolute;top:8px;left:50%;transform:translateX(-50%);animation:float 2s ease-in-out infinite}
+.scroll-text{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;color:rgba(15,254,138,.4)}
+
+/* ── Section Header ── */
+.section-header{text-align:center;margin-bottom:50px}
+.section-header h2{font-size:clamp(28px,5vw,48px);font-weight:800;background:linear-gradient(135deg,#fff,#0ffe8a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;line-height:1.2}
+.section-header p{font-size:16px;color:rgba(240,250,245,.45);max-width:600px;margin:0 auto;line-height:1.7}
+
+/* ── Methodology ── */
+.methodology{padding:100px 24px;position:relative;z-index:2}
+.method-list{max-width:800px;margin:0 auto}
+.method-item{display:flex;gap:28px;margin-bottom:40px}
+.method-phase{display:flex;flex-direction:column;align-items:center;min-width:60px}
+.method-num{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(15,254,138,.15),rgba(15,254,138,.05));border:1px solid rgba(15,254,138,.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#0ffe8a;font-family:'JetBrains Mono',monospace}
+.method-line{width:2px;flex:1;margin-top:8px;background:linear-gradient(to bottom,rgba(15,254,138,.2),transparent)}
+.method-content{flex:1;padding-top:4px}
+.method-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+.method-title{font-size:20px;font-weight:700;color:#f0faf5}
+.method-dur{font-size:11px;color:#0ffe8a;font-weight:600;font-family:'JetBrains Mono',monospace;background:rgba(15,254,138,.08);padding:4px 12px;border-radius:20px;letter-spacing:.05em}
+.method-desc{font-size:14px;color:rgba(240,250,245,.55);line-height:1.75}
+
+/* ── Sequences ── */
+.sequences{padding:80px 24px;position:relative;z-index:2}
+.seq-tabs{display:flex;justify-content:center;gap:12px;margin-bottom:60px;flex-wrap:wrap}
+.seq-tab{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 28px;cursor:pointer;transition:all .3s ease;text-align:left;min-width:220px}
+.seq-tab:hover{border-color:rgba(15,254,138,.2)}
+.seq-tab.active{background:linear-gradient(135deg,rgba(15,254,138,.2),rgba(15,254,138,.08));border-color:rgba(15,254,138,.4)}
+.seq-tab-num{font-size:11px;font-weight:700;color:rgba(240,250,245,.3);letter-spacing:.12em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:6px}
+.seq-tab.active .seq-tab-num{color:#0ffe8a}
+.seq-tab-name{font-size:17px;font-weight:700;color:rgba(240,250,245,.5)}
+.seq-tab.active .seq-tab-name{color:#f0faf5}
+.seq-tab-sub{font-size:12px;color:rgba(240,250,245,.25);margin-top:2px}
+.seq-tab.active .seq-tab-sub{color:rgba(15,254,138,.7)}
+.seq-content{display:none;max-width:780px;margin:0 auto}
+.seq-content.active{display:block}
+.seq-meta{background:rgba(15,254,138,.04);border:1px solid rgba(15,254,138,.1);border-radius:16px;padding:24px 28px;margin-bottom:40px;display:flex;flex-wrap:wrap;gap:32px}
+.seq-meta-label{font-size:10px;color:rgba(15,254,138,.5);text-transform:uppercase;letter-spacing:.1em;font-family:'JetBrains Mono',monospace;margin-bottom:4px}
+.seq-meta-value{font-size:14px;color:#f0faf5;font-weight:600}
+
+/* ── Email Card ── */
+.email-card{margin-bottom:20px}
+.email-inner{background:linear-gradient(145deg,rgba(10,46,26,.85),rgba(8,32,20,.95));border:1px solid rgba(15,254,138,.15);border-radius:16px;padding:28px 32px;position:relative;overflow:hidden;backdrop-filter:blur(20px)}
+.email-day{position:absolute;top:0;right:0;background:linear-gradient(135deg,#0ffe8a,#00c46a);color:#021a0e;font-weight:800;font-size:11px;padding:6px 18px 6px 22px;border-radius:0 16px 0 20px;letter-spacing:.08em;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.email-angle{display:inline-block;background:rgba(15,254,138,.1);border:1px solid rgba(15,254,138,.25);border-radius:20px;padding:4px 14px;font-size:11px;color:#0ffe8a;font-weight:600;letter-spacing:.05em;margin-bottom:14px;font-family:'JetBrains Mono',monospace}
+.email-subject{font-size:17px;font-weight:700;color:#f0faf5;line-height:1.45;margin-bottom:14px}
+.email-subject span{color:rgba(15,254,138,.5);margin-right:8px;font-size:14px}
+.email-hook{font-size:13.5px;color:rgba(240,250,245,.65);line-height:1.7;margin-bottom:14px}
+.email-cta{background:rgba(15,254,138,.06);border:1px solid rgba(15,254,138,.12);border-radius:10px;padding:10px 16px;font-size:12.5px;color:#0ffe8a;font-family:'JetBrains Mono',monospace;line-height:1.6}
+.email-cta .arrow{opacity:.5;margin-right:6px}
+.email-glow{position:absolute;top:-60px;left:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(15,254,138,.04),transparent 70%);pointer-events:none}
+
+/* ── Segmentation ── */
+.segmentation{padding:100px 24px;position:relative;z-index:2}
+.seg-grid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.seg-card{background:linear-gradient(145deg,rgba(10,46,26,.7),rgba(8,32,20,.9));border:1px solid rgba(15,254,138,.1);border-radius:18px;padding:28px 24px}
+.seg-icon{font-size:28px;margin-bottom:14px}
+.seg-title{font-size:18px;font-weight:700;color:#f0faf5;margin-bottom:16px}
+.seg-item{font-size:13px;color:rgba(240,250,245,.55);line-height:1.6;margin-bottom:10px;padding-left:14px;position:relative}
+.seg-item::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:rgba(15,254,138,.4)}
+
+/* ── A/B Testing ── */
+.ab-section{padding:80px 24px;position:relative;z-index:2}
+.ab-grid{max-width:800px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.ab-card{background:rgba(10,46,26,.5);border:1px solid rgba(15,254,138,.08);border-radius:14px;padding:22px 20px}
+.ab-test{font-size:13px;font-weight:700;color:#0ffe8a;margin-bottom:12px;font-family:'JetBrains Mono',monospace}
+.ab-variants{display:flex;gap:8px;margin-bottom:10px}
+.ab-a{flex:1;background:rgba(15,254,138,.06);border-radius:8px;padding:8px 10px;font-size:11px;color:rgba(240,250,245,.6)}
+.ab-b{flex:1;background:rgba(255,255,255,.03);border-radius:8px;padding:8px 10px;font-size:11px;color:rgba(240,250,245,.6)}
+.ab-a span{color:#0ffe8a;font-weight:700}
+.ab-b span{color:rgba(240,250,245,.4);font-weight:700}
+.ab-metric{font-size:10px;color:rgba(240,250,245,.35);text-transform:uppercase;letter-spacing:.08em;font-family:'JetBrains Mono',monospace}
+
+/* ── CTA ── */
+.cta-section{padding:120px 24px;position:relative;z-index:2;text-align:center}
+.cta-box{max-width:700px;margin:0 auto;background:linear-gradient(145deg,rgba(15,254,138,.08),rgba(15,254,138,.02));border:1px solid rgba(15,254,138,.15);border-radius:28px;padding:60px 40px;position:relative;overflow:hidden}
+.cta-glow{position:absolute;top:-100px;right:-100px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(15,254,138,.08),transparent 60%);pointer-events:none}
+.cta-label{font-size:12px;font-weight:700;color:#0ffe8a;letter-spacing:.15em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:20px}
+.cta-box h2{font-size:clamp(26px,4.5vw,40px);font-weight:800;color:#f0faf5;line-height:1.2;margin-bottom:20px}
+.cta-box h2 .green{color:#0ffe8a}
+.cta-desc{font-size:15px;color:rgba(240,250,245,.5);max-width:500px;margin:0 auto 36px;line-height:1.75}
+.cta-btn{display:inline-block;background:linear-gradient(135deg,#0ffe8a,#00c46a);color:#021a0e;font-weight:800;font-size:15px;padding:16px 40px;border-radius:14px;letter-spacing:.02em;box-shadow:0 8px 32px rgba(15,254,138,.3);cursor:pointer;transition:transform .2s,box-shadow .2s;text-decoration:none}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(15,254,138,.4)}
+.cta-credit{font-size:12px;color:rgba(240,250,245,.3);font-family:'JetBrains Mono',monospace;margin-top:16px}
+
+/* ── Footer ── */
+footer{padding:40px 24px;text-align:center;border-top:1px solid rgba(15,254,138,.06)}
+footer div{font-size:11px;color:rgba(240,250,245,.2);font-family:'JetBrains Mono',monospace;letter-spacing:.05em}
+
+@media(max-width:600px){
+  .stats{gap:24px}
+  .seq-tabs{flex-direction:column;align-items:center}
+  .seq-tab{min-width:auto;width:100%;max-width:320px}
+  .method-item{gap:16px}
+  .seg-grid{grid-template-columns:1fr}
+  .ab-grid{grid-template-columns:1fr}
+  .ab-variants{flex-direction:column}
+  .seq-meta{gap:16px}
+  .email-inner{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<!-- Particles -->
+<canvas id="particles"></canvas>
+
+<!-- ════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+
+  <!-- Floating Envelopes -->
+  <div class="envelope-3d" style="top:15%;left:8%;opacity:.3;animation-delay:0s">
+    <div class="envelope-body">
+      <div class="envelope-base"></div>
+      <div class="envelope-flap" id="flap1"></div>
+      <div class="envelope-letter" id="letter1"></div>
+    </div>
+  </div>
+  <div class="envelope-3d" style="top:70%;right:10%;opacity:.2;animation-delay:2s">
+    <div class="envelope-body">
+      <div class="envelope-base"></div>
+      <div class="envelope-flap" id="flap2"></div>
+      <div class="envelope-letter" id="letter2"></div>
+    </div>
+  </div>
+  <div class="envelope-3d" style="top:25%;right:15%;opacity:.25;animation-delay:4s">
+    <div class="envelope-body">
+      <div class="envelope-base"></div>
+      <div class="envelope-flap" id="flap3"></div>
+      <div class="envelope-letter" id="letter3"></div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="badge">
+      <div class="badge-dot"></div>
+      <span class="badge-text">HubSpot Sequence Strategy</span>
+    </div>
+
+    <h1>
+      <span>Conversion Sequences</span><br>
+      <span class="gradient">for Qashio</span>
+    </h1>
+
+    <p class="hero-sub">A strategic email sequence framework engineered to drive finance leaders from first touch to demo booking — built specifically for Qashio's spend management platform.</p>
+
+    <div class="stats">
+      <div><div class="stat-num">3</div><div class="stat-label">Sequences</div></div>
+      <div><div class="stat-num">16</div><div class="stat-label">Emails</div></div>
+      <div><div class="stat-num">5</div><div class="stat-label">Segments</div></div>
+      <div><div class="stat-num">7</div><div class="stat-label">Days</div></div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+      <div class="scroll-text">Scroll to explore</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     METHODOLOGY
+════════════════════════════════════════════════ -->
+<section class="methodology">
+  <div class="section-header reveal">
+    <h2>The Methodology</h2>
+    <p>A structured, data-driven approach to building sequences that convert finance leaders into demo bookings.</p>
+  </div>
+
+  <div class="method-list">
+    <!-- Phase 01 -->
+    <div class="method-item reveal-left" style="transition-delay:.1s">
+      <div class="method-phase">
+        <div class="method-num">01</div>
+        <div class="method-line"></div>
+      </div>
+      <div class="method-content">
+        <div class="method-head">
+          <h3 class="method-title">Discovery & ICP Mapping</h3>
+          <span class="method-dur">Day 1–2</span>
+        </div>
+        <p class="method-desc">Quick-start audit of your current HubSpot setup, ICP definitions, and Qashio's core value props. Map pain points to each target persona so every email hits the right nerve.</p>
+      </div>
+    </div>
+    <!-- Phase 02 -->
+    <div class="method-item reveal-left" style="transition-delay:.2s">
+      <div class="method-phase">
+        <div class="method-num">02</div>
+        <div class="method-line"></div>
+      </div>
+      <div class="method-content">
+        <div class="method-head">
+          <h3 class="method-title">Segmentation & Sequence Architecture</h3>
+          <span class="method-dur">Day 2–3</span>
+        </div>
+        <p class="method-desc">Define audience segments by role, company size, and industry. Map out the flow, cadence, and branching logic for all 3 sequences before writing a single word.</p>
+      </div>
+    </div>
+    <!-- Phase 03 -->
+    <div class="method-item reveal-left" style="transition-delay:.3s">
+      <div class="method-phase">
+        <div class="method-num">03</div>
+        <div class="method-line"></div>
+      </div>
+      <div class="method-content">
+        <div class="method-head">
+          <h3 class="method-title">Email Copywriting & A/B Variants</h3>
+          <span class="method-dur">Day 3–5</span>
+        </div>
+        <p class="method-desc">Write all 16 emails across 3 sequences with A/B subject line and CTA variants. Every email engineered for conversion, not just opens.</p>
+      </div>
+    </div>
+    <!-- Phase 04 -->
+    <div class="method-item reveal-left" style="transition-delay:.4s">
+      <div class="method-phase">
+        <div class="method-num">04</div>
+      </div>
+      <div class="method-content">
+        <div class="method-head">
+          <h3 class="method-title">HubSpot Build, QA & Handoff</h3>
+          <span class="method-dur">Day 5–7</span>
+        </div>
+        <p class="method-desc">Build all sequences, enrollment triggers, personalization tokens, and branching logic in HubSpot. Full QA across email clients. Handoff with documentation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     EMAIL SEQUENCES
+════════════════════════════════════════════════ -->
+<section class="sequences">
+  <div class="section-header reveal">
+    <h2>The Email Sequences</h2>
+    <p>Three interconnected sequences covering the full buyer journey — from cold outreach to closed demo.</p>
+  </div>
+
+  <!-- Tabs -->
+  <div class="seq-tabs">
+    <div class="seq-tab active" onclick="switchSeq(0)">
+      <div class="seq-tab-num">Sequence 1</div>
+      <div class="seq-tab-name">The Opener</div>
+      <div class="seq-tab-sub">Cold Outreach Sequence</div>
+    </div>
+    <div class="seq-tab" onclick="switchSeq(1)">
+      <div class="seq-tab-num">Sequence 2</div>
+      <div class="seq-tab-name">The Nurture</div>
+      <div class="seq-tab-sub">Pain-Point Education Sequence</div>
+    </div>
+    <div class="seq-tab" onclick="switchSeq(2)">
+      <div class="seq-tab-num">Sequence 3</div>
+      <div class="seq-tab-name">The Closer</div>
+      <div class="seq-tab-sub">Re-engagement & Demo Push</div>
+    </div>
+  </div>
+
+  <!-- Sequence 1: The Opener -->
+  <div class="seq-content active" id="seq-0">
+    <div class="seq-meta">
+      <div><div class="seq-meta-label">Target Personas</div><div class="seq-meta-value">CFOs · Finance Directors · Procurement Heads</div></div>
+      <div><div class="seq-meta-label">Strategic Goal</div><div class="seq-meta-value">Pattern-interrupt → Curiosity → Demo booking</div></div>
+      <div><div class="seq-meta-label">Emails</div><div class="seq-meta-value">5 touchpoints</div></div>
+    </div>
+
+    <div class="email-card reveal-left" style="transition-delay:.05s"><div class="email-inner">
+      <div class="email-day">Day 1</div><div class="email-glow"></div>
+      <div class="email-angle">Empathy + Specificity</div>
+      <div class="email-subject"><span>Subject:</span> Your team just submitted 47 expense reports manually</div>
+      <div class="email-hook">Pain-first opener. Call out the exact friction finance leaders feel daily — manual reconciliation, chasing receipts, end-of-month chaos.</div>
+      <div class="email-cta"><span class="arrow">→</span> Soft CTA — '15 min to see how Qashio eliminates this?'</div>
+    </div></div>
+
+    <div class="email-card reveal-right" style="transition-delay:.1s"><div class="email-inner">
+      <div class="email-day">Day 3</div><div class="email-glow"></div>
+      <div class="email-angle">Cost of Inaction</div>
+      <div class="email-subject"><span>Subject:</span> The hidden cost of 'good enough' expense tools</div>
+      <div class="email-hook">Quantify the cost of status quo — lost hours, compliance risk, zero spend visibility. Position Qashio as the modern alternative.</div>
+      <div class="email-cta"><span class="arrow">→</span> Value-driven CTA — 'See the ROI calculator in action'</div>
+    </div></div>
+
+    <div class="email-card reveal-left" style="transition-delay:.15s"><div class="email-inner">
+      <div class="email-day">Day 5</div><div class="email-glow"></div>
+      <div class="email-angle">Social Proof</div>
+      <div class="email-subject"><span>Subject:</span> How [Similar Company] cut expense processing by 80%</div>
+      <div class="email-hook">Social proof lead. Reference Qashio's real customer wins — FITT Meals, Rmal, etc. Make the result feel tangible and achievable.</div>
+      <div class="email-cta"><span class="arrow">→</span> Proof CTA — 'Want the same playbook? Book 15 mins'</div>
+    </div></div>
+
+    <div class="email-card reveal-right" style="transition-delay:.2s"><div class="email-inner">
+      <div class="email-day">Day 8</div><div class="email-glow"></div>
+      <div class="email-angle">Engagement Trigger</div>
+      <div class="email-subject"><span>Subject:</span> Quick question about your corporate card setup</div>
+      <div class="email-hook">Consultative angle. Ask about their current card/expense stack. Position as helpful, not salesy. Opens a reply thread.</div>
+      <div class="email-cta"><span class="arrow">→</span> Reply CTA — 'Hit reply — I'll share what's working for teams your size'</div>
+    </div></div>
+
+    <div class="email-card reveal-left" style="transition-delay:.25s"><div class="email-inner">
+      <div class="email-day">Day 12</div><div class="email-glow"></div>
+      <div class="email-angle">Unique Value Prop</div>
+      <div class="email-subject"><span>Subject:</span> Last thing — the rewards angle your CFO will love</div>
+      <div class="email-hook">Differentiation play. Lead with Emirates Skywards Miles, cashback, Shukran rewards. Qashio's unique moat. No competitor matches this.</div>
+      <div class="email-cta"><span class="arrow">→</span> Final push — 'See the full rewards breakdown in a quick demo'</div>
+    </div></div>
+  </div>
+
+  <!-- Sequence 2: The Nurture -->
+  <div class="seq-content" id="seq-1">
+    <div class="seq-meta">
+      <div><div class="seq-meta-label">Target Personas</div><div class="seq-meta-value">Finance Managers · Operations Leads · Office Managers</div></div>
+      <div><div class="seq-meta-label">Strategic Goal</div><div class="seq-meta-value">Educate on specific pain → Build trust → Convert warm leads</div></div>
+      <div><div class="seq-meta-label">Emails</div><div class="seq-meta-value">6 touchpoints</div></div>
+    </div>
+
+    <div class="email-card reveal-left" style="transition-delay:.05s"><div class="email-inner">
+      <div class="email-day">Day 1</div><div class="email-glow"></div>
+      <div class="email-angle">Problem Awareness</div>
+      <div class="email-subject"><span>Subject:</span> Petty cash is costing you more than you think</div>
+      <div class="email-hook">Open with the petty cash problem — leakage, zero audit trail, manual tracking. Qashio reduces petty cash spend by 90%+.</div>
+      <div class="email-cta"><span class="arrow">→</span> Educational CTA — 'See how 3 UAE companies eliminated petty cash'</div>
+    </div></div>
+
+    <div class="email-card reveal-right" style="transition-delay:.1s"><div class="email-inner">
+      <div class="email-day">Day 3</div><div class="email-glow"></div>
+      <div class="email-angle">Visibility Gap</div>
+      <div class="email-subject"><span>Subject:</span> What happens when you can't see spend in real-time?</div>
+      <div class="email-hook">Spend visibility pain. Budget overruns, surprise invoices, quarter-end scrambles. Position real-time dashboards as the fix.</div>
+      <div class="email-cta"><span class="arrow">→</span> Visual CTA — 'See your spend dashboard in action'</div>
+    </div></div>
+
+    <div class="email-card reveal-left" style="transition-delay:.15s"><div class="email-inner">
+      <div class="email-day">Day 6</div><div class="email-glow"></div>
+      <div class="email-angle">Process Friction</div>
+      <div class="email-subject"><span>Subject:</span> Your approval workflow is a bottleneck (here's proof)</div>
+      <div class="email-hook">Manual approvals = delays, lost context, friction. Show how automated multi-level approval workflows accelerate operations.</div>
+      <div class="email-cta"><span class="arrow">→</span> Demo CTA — 'Watch a 2-min workflow automation walkthrough'</div>
+    </div></div>
+
+    <div class="email-card reveal-right" style="transition-delay:.2s"><div class="email-inner">
+      <div class="email-day">Day 9</div><div class="email-glow"></div>
+      <div class="email-angle">Integration Pain</div>
+      <div class="email-subject"><span>Subject:</span> ERP sync nightmares? You're not alone</div>
+      <div class="email-hook">Integration pain — manual CSV exports, reconciliation errors, duplicate entries. Qashio's native ERP integrations (SAP, Oracle, Xero, Zoho).</div>
+      <div class="email-cta"><span class="arrow">→</span> Technical CTA — 'See your ERP integration options in 15 mins'</div>
+    </div></div>
+
+    <div class="email-card reveal-left" style="transition-delay:.25s"><div class="email-inner">
+      <div class="email-day">Day 12</div><div class="email-glow"></div>
+      <div class="email-angle">Employee Experience</div>
+      <div class="email-subject"><span>Subject:</span> The card your team actually wants to use</div>
+      <div class="email-hook">Employee experience angle. Apple Pay, Samsung Pay, Google Pay. Instant virtual cards. Rewards on every transaction. Make expense management desirable.</div>
+      <div class="email-cta"><span class="arrow">→</span> Experience CTA — 'Give your team smart cards — book a walkthrough'</div>
+    </div></div>
+
+    <div class="email-card reveal-right" style="transition-delay:.3s"><div class="email-inner">
+      <div class="email-day">Day 16</div><div class="email-glow"></div>
+      <div class="email-angle">Authority Close</div>
+      <div class="email-subject"><span>Subject:</span> 3 things top finance teams do differently in 2026</div>
+      <div class="email-hook">Thought leadership wrap-up. Position Qashio users as forward-thinking. Automate, control, reward. Final conversion push.</div>
+      <div class="email-cta"><span class="arrow">→</span> Authority CTA — 'Join 10,000+ users. See Qashio in action'</div>
+    </div></div>
+  </div>
+
+  <!-- Sequence 3: The Closer -->
+  <div class="seq-content" id="seq-2">
+    <div class="seq-meta">
+      <div><div class="seq-meta-label">Target Personas</div><div class="seq-meta-value">All personas who opened but didn't book</div></div>
+      <div><div class="seq-meta-label">Strategic Goal</div><div class="seq-meta-value">Overcome objections → Create urgency → Book the demo</div></div>
+      <div><div class="seq-meta-label">Emails</div><div class="seq-meta-value">5 touchpoints</div></div>
+    </div>
+
+    <div class="email-card reveal-left" style="transition-delay:.05s"><div class="email-inner">
+      <div class="email-day">Day 1</div><div class="email-glow"></div>
+      <div class="email-angle">Fresh Value</div>
+      <div class="email-subject"><span>Subject:</span> Still thinking it over? Here's what changed this week</div>
+      <div class="email-hook">Re-engage with fresh value — new feature, new integration, new reward partnership. Make the timing feel relevant.</div>
+      <div class="email-cta"><span class="arrow">→</span> Timely CTA — 'See what's new in a 10-min walkthrough'</div>
+    </div></div>
+
+    <div class="email-card reveal-right" style="transition-delay:.1s"><div class="email-inner">
+      <div class="email-day">Day 4</div><div class="email-glow"></div>
+      <div class="email-angle">Competitive FOMO</div>
+      <div class="email-subject"><span>Subject:</span> Your competitor just switched to smart corporate cards</div>
+      <div class="email-hook">Competitive pressure. FOMO-driven. Don't name names but imply industry peers are moving. The market is shifting.</div>
+      <div class="email-cta"><span class="arrow">→</span> Urgency CTA — 'Don't fall behind. Book your demo this week'</div>
+    </div></div>
+
+    <div class="email-card reveal-left" style="transition-delay:.15s"><div class="email-inner">
+      <div class="email-day">Day 7</div><div class="email-glow"></div>
+      <div class="email-angle">Objection Crusher</div>
+      <div class="email-subject"><span>Subject:</span> The #1 objection finance teams have (and why it's wrong)</div>
+      <div class="email-hook">Objection handling — 'We already have a card program' or 'Switching is too complex.' Address head-on with proof points.</div>
+      <div class="email-cta"><span class="arrow">→</span> Confidence CTA — 'Let us show you a side-by-side. 15 mins'</div>
+    </div></div>
+
+    <div class="email-card reveal-right" style="transition-delay:.2s"><div class="email-inner">
+      <div class="email-day">Day 10</div><div class="email-glow"></div>
+      <div class="email-angle">Risk Reversal</div>
+      <div class="email-subject"><span>Subject:</span> Free pilot: see Qashio with your own data</div>
+      <div class="email-hook">Risk reversal. Offer a pilot or sandbox demo with their real scenarios. Remove the commitment barrier entirely.</div>
+      <div class="email-cta"><span class="arrow">→</span> Zero-risk CTA — 'Start your free pilot — book the setup call'</div>
+    </div></div>
+
+    <div class="email-card reveal-left" style="transition-delay:.25s"><div class="email-inner">
+      <div class="email-day">Day 14</div><div class="email-glow"></div>
+      <div class="email-angle">Emotional Close</div>
+      <div class="email-subject"><span>Subject:</span> Last call — your finance team deserves better tools</div>
+      <div class="email-hook">Emotional close. This isn't just software — it's time back, stress reduced, control gained. Human-centered final appeal.</div>
+      <div class="email-cta"><span class="arrow">→</span> Final CTA — 'One call. That's all it takes. Book here →'</div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     SEGMENTATION
+════════════════════════════════════════════════ -->
+<section class="segmentation">
+  <div class="section-header reveal">
+    <h2>Audience Segmentation</h2>
+    <p>Every segment gets tailored messaging. No spray-and-pray.</p>
+  </div>
+
+  <div class="seg-grid">
+    <div class="seg-card reveal-scale" style="transition-delay:.1s">
+      <div class="seg-icon">👤</div>
+      <h3 class="seg-title">By Role</h3>
+      <div class="seg-item">CFOs & Finance Directors — ROI, compliance, board reporting</div>
+      <div class="seg-item">Finance Managers — daily efficiency, reconciliation, visibility</div>
+      <div class="seg-item">Procurement Heads — vendor payments, controls, approval speed</div>
+      <div class="seg-item">Operations & Office Mgrs — petty cash, team card management</div>
+    </div>
+    <div class="seg-card reveal-scale" style="transition-delay:.2s">
+      <div class="seg-icon">🏢</div>
+      <h3 class="seg-title">By Company Size</h3>
+      <div class="seg-item">SMB (10-50) — speed, simplicity, quick wins</div>
+      <div class="seg-item">Mid-Market (50-500) — scalability, multi-entity, ERP sync</div>
+      <div class="seg-item">Enterprise (500+) — compliance, security, custom integrations</div>
+    </div>
+    <div class="seg-card reveal-scale" style="transition-delay:.3s">
+      <div class="seg-icon">🏭</div>
+      <h3 class="seg-title">By Industry</h3>
+      <div class="seg-item">F&B / Hospitality — petty cash, daily ops spend</div>
+      <div class="seg-item">Construction — project-based budgets, field teams</div>
+      <div class="seg-item">Tech / SaaS — SaaS subscriptions, travel, team cards</div>
+      <div class="seg-item">Retail — multi-location, inventory purchasing</div>
+    </div>
+    <div class="seg-card reveal-scale" style="transition-delay:.4s">
+      <div class="seg-icon">📊</div>
+      <h3 class="seg-title">By Behaviour</h3>
+      <div class="seg-item">Opened but didn't reply → Nurture sequence</div>
+      <div class="seg-item">Replied but didn't book → Closer sequence</div>
+      <div class="seg-item">Booked but no-showed → Re-engagement</div>
+      <div class="seg-item">Visited pricing page → Fast-track to demo</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     A/B TESTING
+════════════════════════════════════════════════ -->
+<section class="ab-section">
+  <div class="section-header reveal">
+    <h2>A/B Testing Strategy</h2>
+    <p>Every email ships with A/B variants. Here's what we test.</p>
+  </div>
+
+  <div class="ab-grid">
+    <div class="ab-card reveal-scale" style="transition-delay:.05s">
+      <div class="ab-test">Subject Lines</div>
+      <div class="ab-variants"><div class="ab-a"><span>A </span>Pain-first approach</div><div class="ab-b"><span>B </span>Benefit-first approach</div></div>
+      <div class="ab-metric">Measured by: Open Rate</div>
+    </div>
+    <div class="ab-card reveal-scale" style="transition-delay:.1s">
+      <div class="ab-test">CTA Style</div>
+      <div class="ab-variants"><div class="ab-a"><span>A </span>Soft ask (reply-based)</div><div class="ab-b"><span>B </span>Direct calendar link</div></div>
+      <div class="ab-metric">Measured by: Click Rate</div>
+    </div>
+    <div class="ab-card reveal-scale" style="transition-delay:.15s">
+      <div class="ab-test">Email Length</div>
+      <div class="ab-variants"><div class="ab-a"><span>A </span>Short (60-80 words)</div><div class="ab-b"><span>B </span>Detailed (120-150 words)</div></div>
+      <div class="ab-metric">Measured by: Reply Rate</div>
+    </div>
+    <div class="ab-card reveal-scale" style="transition-delay:.2s">
+      <div class="ab-test">Personalisation</div>
+      <div class="ab-variants"><div class="ab-a"><span>A </span>Company-level merge</div><div class="ab-b"><span>B </span>Role-specific merge</div></div>
+      <div class="ab-metric">Measured by: Demo Rate</div>
+    </div>
+    <div class="ab-card reveal-scale" style="transition-delay:.25s">
+      <div class="ab-test">Send Time</div>
+      <div class="ab-variants"><div class="ab-a"><span>A </span>Tue/Thu 9AM GST</div><div class="ab-b"><span>B </span>Mon/Wed 2PM GST</div></div>
+      <div class="ab-metric">Measured by: Open Rate</div>
+    </div>
+    <div class="ab-card reveal-scale" style="transition-delay:.3s">
+      <div class="ab-test">Social Proof</div>
+      <div class="ab-variants"><div class="ab-a"><span>A </span>Named case study</div><div class="ab-b"><span>B </span>Stat-driven proof</div></div>
+      <div class="ab-metric">Measured by: Reply Rate</div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     CTA / CLOSING
+════════════════════════════════════════════════ -->
+<section class="cta-section">
+  <div class="cta-box reveal">
+    <div class="cta-glow"></div>
+    <div class="cta-label">Ready to Launch?</div>
+    <h2>Let's build sequences that<br><span class="green">fill Qashio's demo calendar</span></h2>
+    <p class="cta-desc">3 conversion-focused sequences. 16 emails. Full HubSpot build with A/B variants, segmentation, and enrollment logic — delivered in 7 days, ready to launch.</p>
+    <a class="cta-btn" href="#">Let's Get Started →</a>
+    <div class="cta-credit">Proposal by Rounak · HubSpot Sequence Specialist</div>
+  </div>
+</section>
+
+<footer>
+  <div>QASHIO × HUBSPOT EMAIL SEQUENCE STRATEGY · CONFIDENTIAL</div>
+</footer>
+
+<script>
+// ── Particle System ──
+(function(){
+  const c=document.getElementById('particles'),ctx=c.getContext('2d');
+  let w,h;
+  function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+  resize(); addEventListener('resize',resize);
+  const pts=Array.from({length:60},()=>({
+    x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+    vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,
+    r:Math.random()*2+.5,a:Math.random()*.5+.1
+  }));
+  (function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(const p of pts){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=w;if(p.x>w)p.x=0;
+      if(p.y<0)p.y=h;if(p.y>h)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(15,254,138,${p.a})`;ctx.fill();
+    }
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<150){
+          ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=`rgba(15,254,138,${.06*(1-d/150)})`;ctx.lineWidth=.5;ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  })();
+})();
+
+// ── Scroll Progress Bar ──
+addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-innerHeight;
+  document.getElementById('progress-fill').style.width=(h>0?scrollY/h*100:0)+'%';
+},{passive:true});
+
+// ── Envelope Open on Scroll ──
+let envelopesOpened=false;
+addEventListener('scroll',()=>{
+  if(scrollY>200&&!envelopesOpened){
+    envelopesOpened=true;
+    document.querySelectorAll('.envelope-flap').forEach(f=>f.classList.add('open'));
+  }
+},{passive:true});
+
+// ── Intersection Observer for Reveals ──
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.12});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el=>obs.observe(el));
+
+// ── Sequence Tab Switching ──
+function switchSeq(idx){
+  document.querySelectorAll('.seq-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.seq-content').forEach((c,i)=>{
+    c.classList.toggle('active',i===idx);
+    if(i===idx){
+      // Re-trigger reveal animations for newly visible cards
+      c.querySelectorAll('.email-card').forEach(card=>{
+        card.classList.remove('visible');
+        void card.offsetWidth; // force reflow
+        obs.observe(card);
+      });
+    }
+  });
+}
+</script>
+</body>
+</html>
